@@ -7,6 +7,7 @@ This Python project scrapes customer reviews from an e-commerce website (or a lo
 - Saves the scraped data in both **CSV** and **Excel** formats.
 - Automates browser interactions to dynamically load pages for scraping.
 - Option to scrape multiple pages of reviews.
+- Visualizes the ratings of reviews in an area plot.
 
 ## Requirements
 
@@ -29,7 +30,10 @@ Before using this project, ensure that **Python** is installed on your machine, 
    - **selenium**: For browser automation and dynamically interacting with web pages.
    - **pandas**: For handling and saving the scraped data.
    - **openpyxl**: For saving data to an Excel file.
+   - **numpy**: For data handling and numeric operations.
+   - **matplotlib**: For visualizing the ratings in an area plot.
+   - **webdriver-manager**: For managing the WebDriver for Selenium.
 
    To install the required libraries, open your terminal and run the following command:
    ```bash
-   pip install selenium pandas openpyxl
+   pip install -r requirements.txt
