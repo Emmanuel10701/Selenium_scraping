@@ -59,16 +59,23 @@ def save_to_files(df, csv_path, excel_path):
     df.to_csv(csv_path, index=False)
     df.to_excel(excel_path, index=False)
 
-# Visualize Data
+# Visualize Data as an Area Plot
 def visualize_data(df, img_path):
     plt.figure(figsize=(10, 6))
-    plt.barh(df["Review"].str[:30], df["Rating"], color="skyblue")
-    plt.xlabel("Rating")
-    plt.ylabel("Review (Truncated)")
+    
+    # Create an area plot using fill_between for the Rating data
+    plt.fill_between(df["Review"].str[:30], df["Rating"], color="skyblue", alpha=0.5)
+    
+    # Add labels and title
+    plt.xlabel("Review (Truncated)")
+    plt.ylabel("Rating")
     plt.title("Ratings of Reviews")
+    
+    # Improve layout and save the figure
     plt.tight_layout()
     plt.savefig(img_path)
     plt.show()
+
 
 # Main script
 if __name__ == "__main__":
