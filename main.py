@@ -1,68 +1,52 @@
 from selenium import webdriver
-from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-import pandas as pd
+from webdriver_manager.chrome import ChromeDriverManager
 import os
 
-# Function to scrape reviews from a URL using Selenium
+# Function to scrape reviews
 def scrape_reviews_with_selenium(target_url):
-    # Set up Selenium WebDriver
+    # Configure ChromeDriver options
     options = Options()
-    options.add_argument("--headless")  # Run in headless mode (no browser UI)
-    options.add_argument("--disable-gpu")  # Disable GPU acceleration
-    service = Service("path/to/chromedriver")  # Replace with the path to your ChromeDriver
-    driver = webdriver.Chrome(service=service, options=options)
+    options.add_argument("--headless")  # Run in headless mode (optional)
+    options.add_argument("--disable-gpu")
+    options.add_argument("--no-sandbox")
 
-    reviews = []
+    # Initialize the WebDriver
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
     try:
         # Open the target URL
         driver.get(target_url)
 
-        # Wait for the content to load (optional, you can use explicit waits for specific elements)
-        driver.implicitly_wait(10)
+        # Example scraping logic (modify as per your requirement)
+        reviews = []
+        review_elements = driver.find_elements(By.CLASS_NAME, "review")  # Adjust the selector as needed
 
-        # Extract review elements
-        review_elements = driver.find_elements(By.CLASS_NAME, "review")
-        for element in review_elements:
-            try:
-                username = element.find_element(By.CLASS_NAME, "username").text.strip()
-                rating = element.find_element(By.CLASS_NAME, "rating").text.strip()
-                comment = element.find_element(By.CLASS_NAME, "comment").text.strip()
-                reviews.append({
-                    "Username": username,
-                    "Rating": rating,
-                    "Comment": comment
-                })
-            except Exception as e:
-                print(f"Error extracting review: {e}")
-                continue
+        for review in review_elements:
+            reviews.append(review.text)
+
+        return reviews
+
+    except Exception as e:
+        print(f"Error: {e}")
     finally:
-        # Close the WebDriver
+        # Ensure the driver quits even if an error occurs
         driver.quit()
 
-    return reviews
+# Main script
+if __name__ == "__main__":
+    # Specify the target file
+    TARGET_FILE = "file2.html"
 
-# Target URL
-TARGET_URL = "https://www.sitejabber.com/reviews/jumia.com"
+    # Convert the file path to a fully qualified URL
+    TARGET_URL = f"file://{os.path.abspath(TARGET_FILE)}"
 
-# Scrape the reviews
-reviews_data = scrape_reviews_with_selenium(TARGET_URL)
+    # Scrape the reviews
+    reviews_data = scrape_reviews_with_selenium(TARGET_URL)
 
-# Save data to CSV and Excel
-if reviews_data:
-    # Convert to a DataFrame
-    df = pd.DataFrame(reviews_data)
-
-    # Save to CSV
-    csv_file = "customer_reviews.csv"
-    df.to_csv(csv_file, index=False, encoding="utf-8")
-    print(f"Reviews have been saved to {csv_file}")
-
-    # Save to Excel
-    excel_file = "customer_reviews.xlsx"
-    df.to_excel(excel_file, index=False, engine="openpyxl")  # Use 'openpyxl' for Excel files
-    print(f"Reviews have been saved to {excel_file}")
-else:
-    print("No reviews found.")
+    # Output the scraped reviews
+    print("Scraped Reviews:")
+    for review in reviews_data:
+        print(review)
