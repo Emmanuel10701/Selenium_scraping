@@ -8,6 +8,7 @@ This Python project scrapes customer reviews from an e-commerce website (or a lo
 - Automates browser interactions to dynamically load pages for scraping.
 - Option to scrape multiple pages of reviews.
 - Visualizes the ratings of reviews in an area plot.
+- Added the collab file in jupyter format to classify grades of students.
 
 ## Requirements
 
